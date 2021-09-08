@@ -2,10 +2,23 @@ import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 import api from './api'
 import Users from './components/users'
+import Pagination from './components/pagination'
 import SearchStatus from './components/searchStatus'
+import { paginate } from './utils/paginate'
 
 function App() {
   const [users, setUsers] = useState(api.users.fetchAll())
+
+  const count = users.length
+  const pageSize = 4
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handlePageChange = (pageIndex) => {
+    console.log('page: ', pageIndex)
+    setCurrentPage(pageIndex)
+  }
+
+  const userCrop = paginate(users, currentPage, pageSize)
 
   const handleDelete = (userId) => {
     setUsers(users.filter((user) => user._id !== userId))
@@ -25,7 +38,7 @@ function App() {
   return (
     <main>
       <h1>
-        <SearchStatus number={users.length} />
+        <SearchStatus number={count} />
       </h1>
       <table className="table">
         <thead>
@@ -43,10 +56,16 @@ function App() {
           <Users
             onDelete={handleDelete}
             toFavourites={handleToFavourites}
-            users={users}
+            users={userCrop}
           />
         </tbody>
       </table>
+      <Pagination
+        itemsCount={count}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </main>
   )
 }
