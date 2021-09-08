@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from "prop-types"
 
 const SearchStatus = ({ number }) => {
   if (
@@ -15,9 +15,12 @@ const SearchStatus = ({ number }) => {
     return `${number} человека тусанет с тобой сегодня`
   }
   if (number === 0) {
-    return 'Никто не тусанет с тобой'
+    return "Никто не тусанет с тобой"
   }
   return `${number} человек тусанет с тобой сегодня`
+}
+SearchStatus.propTypes = {
+  number: PropTypes.number.isRequired
 }
 
 export default SearchStatus

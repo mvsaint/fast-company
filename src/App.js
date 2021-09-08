@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.css'
-import api from './api'
-import Users from './components/users'
-import Pagination from './components/pagination'
-import SearchStatus from './components/searchStatus'
-import { paginate } from './utils/paginate'
+import React, { useState } from "react"
+import "bootstrap/dist/css/bootstrap.css"
+import api from "./api"
+import Users from "./components/users"
+import Pagination from "./components/pagination"
+import SearchStatus from "./components/searchStatus"
+import { paginate } from "./utils/paginate"
 
 function App() {
   const [users, setUsers] = useState(api.users.fetchAll())
@@ -14,7 +14,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
 
   const handlePageChange = (pageIndex) => {
-    console.log('page: ', pageIndex)
+    console.log("page: ", pageIndex)
     setCurrentPage(pageIndex)
   }
 
@@ -27,10 +27,10 @@ function App() {
   const handleToFavourites = (userId) => {
     const newUsers = [...users]
     const elementIndex = newUsers.findIndex((user) => user._id === userId)
-    if (newUsers[elementIndex].status === 'yes') {
-      newUsers[elementIndex].status = 'no'
+    if (newUsers[elementIndex].status === true) {
+      newUsers[elementIndex].status = false
     } else {
-      newUsers[elementIndex].status = 'yes'
+      newUsers[elementIndex].status = true
     }
     setUsers(newUsers)
   }
