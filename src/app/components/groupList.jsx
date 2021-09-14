@@ -8,43 +8,25 @@ const GroupList = ({
     onItemSelect,
     selectedItem
 }) => {
-    if (!Array.isArray(items)) {
-        return (
-            <ul className="list-group">
-                {Object.keys(items).map((item) => (
-                    <li
-                        key={items[item][valueProperty]}
-                        className={
-                            "list-group-item" +
-                            (items[item] === selectedItem ? " active" : "")
-                        }
-                        onClick={() => onItemSelect(items[item])}
-                        role="button"
-                    >
-                        {items[item][contentProperty]}
-                    </li>
-                ))}
-            </ul>
-        );
-    } else {
-        return (
-            <ul className="list-group">
-                {items.map((item) => (
-                    <li
-                        key={item[valueProperty]}
-                        className={
-                            "list-group-item" +
-                            (item === selectedItem ? " active" : "")
-                        }
-                        onClick={() => onItemSelect(item)}
-                        role="button"
-                    >
-                        {item[contentProperty]}
-                    </li>
-                ))}
-            </ul>
-        );
-    }
+    const listItems = Array.isArray(items) ? items : Object.values(items);
+
+    return (
+        <ul className="list-group">
+            {listItems.map((value) => (
+                <li
+                    key={value[valueProperty]}
+                    className={
+                        "list-group-item" +
+                        (value === selectedItem ? " active" : "")
+                    }
+                    onClick={() => onItemSelect(value)}
+                    role="button"
+                >
+                    {value[contentProperty]}
+                </li>
+            ))}
+        </ul>
+    );
 };
 
 GroupList.defaultProps = {
