@@ -1,56 +1,46 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Quality from "./quality";
-import BookMark from "./bookmark";
-const User = ({
-    _id,
-    name,
-    qualities,
-    profession,
-    completedMeetings,
-    rate,
-    onDelete,
-    bookmark,
-    onToggleBookMark
-}) => {
-    return (
-        <tr key={_id}>
-            <td>{name}</td>
-            <td>
-                {qualities.map((qual) => (
-                    <Quality key={qual._id} {...qual} />
-                ))}
-            </td>
-            <td>{profession.name}</td>
-            <td>{completedMeetings}</td>
-            <td>{rate} /5</td>
-            <td>
-                <BookMark
-                    status={bookmark}
-                    onClick={() => onToggleBookMark(_id)}
-                />
-            </td>
-            <td>
-                <button
-                    onClick={() => onDelete(_id)}
-                    className="btn btn-danger"
-                >
-                    delete
-                </button>
-            </td>
-        </tr>
+/* eslint-disable */
+import React, { useState, useEffect } from "react";
+import PropType from "prop-types";
+import { useHistory } from "react-router-dom";
+import api from "../api";
+import QualitiesList from "./qualitiesList";
+
+const User = ({ match }) => {
+    const history = useHistory();
+    const handleBackToList = () => {
+        history.push("/users");
+    };
+    const userId = match.params.userId;
+    const [user, setUser] = useState();
+    useEffect(() => {
+        api.users.getById(userId).then((data) => setUser(data));
+    }, []);
+
+    return user ? (
+        <div className="container-fluid">
+            <h1>{user.name}</h1>
+            <h2>Профессия: {user.profession.name}</h2>
+            <div className="d-flex">
+                <QualitiesList qualities={user.qualities} />
+            </div>
+            <p>completedMeetings: {user.completedMeetings}</p>
+            <h3>Rate: {user.rate}</h3>
+            <button
+                className="btn btn-light"
+                onClick={() => {
+                    handleBackToList();
+                }}
+            >
+                Все пользователи
+            </button>
+        </div>
+    ) : (
+        <h1>Loading...</h1>
     );
 };
+
 User.propTypes = {
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    qualities: PropTypes.array,
-    profession: PropTypes.object.isRequired,
-    completedMeetings: PropTypes.number.isRequired,
-    rate: PropTypes.number.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    bookmark: PropTypes.bool,
-    onToggleBookMark: PropTypes.func.isRequired
+    match: PropType.object
 };
 
 export default User;
