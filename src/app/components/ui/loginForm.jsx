@@ -1,16 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../../components/common/form/textField";
+import CheckBoxField from "../../components/common/form/checkBoxField";
+// import * as yup from "yup";
 
 const LoginForm = () => {
-    const [data, setData] = useState({ email: "", password: "" });
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        stayOn: false
+    });
     const [errors, setErrors] = useState({});
-    const handleChange = ({ target }) => {
+    const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
     };
+
+    // const validateSheme = yup.object().shape({
+    //     password: yup
+    //         .string()
+    //         .required("Пароль обязательна для заполнения")
+    //         .matches(
+    //             /[A-Z]+/g,
+    //             "Пароль должен содержать хотя бы одну заглавную букву"
+    //         )
+    //         .matches(/\d+/g, "Пароль должен содержать хотя бы одно число")
+    //         .matches(
+    //             /(?=.*[!@#$%^&*])/,
+    //             "Пароль должен содержать один из спеуиальных символов !@#$%^&*"
+    //         )
+    //         .matches(
+    //             /(?=.{8,})/,
+    //             "Пароль должен состоять миниму из 8 символов"
+    //         ),
+    //     email: yup
+    //         .string()
+    //         .required("Электронная почта обязательна для заполнения")
+    //         .email("Email введен некорректно")
+    // });
+
     const validatorConfog = {
         email: {
             isRequired: {
@@ -31,16 +61,27 @@ const LoginForm = () => {
                 message: "Пароль должен содержать хотя бы одно число"
             },
             min: {
-                message: "Пароль должен состаять миниму из 8 символов",
+                message: "Пароль должен состоять миниму из 8 символов",
                 value: 8
             }
         }
     };
+
     useEffect(() => {
         validate();
     }, [data]);
     const validate = () => {
         const errors = validator(data, validatorConfog);
+
+        // validateSheme
+        //     .validate(data)
+        //     .then(() => {
+        //         setErrors({});
+        //     })
+        //     .catch((err) => {
+        //         setErrors({ [err.path]: err.message });
+        //     });
+
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -69,6 +110,13 @@ const LoginForm = () => {
                 onChange={handleChange}
                 error={errors.password}
             />
+            <CheckBoxField
+                value={data.stayOn}
+                onChange={handleChange}
+                name="stayOn"
+            >
+                Оставаться в системе
+            </CheckBoxField>
             <button
                 type="submit"
                 disabled={!isValid}
