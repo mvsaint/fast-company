@@ -1,85 +1,74 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { paginate } from '../utils/paginate'
-import Pagination from './pagination'
-import api from '../api'
-import GroupList from './groupList'
-import SearchStatus from './searchStatus'
-import UsersTable from './usersTable'
-import _ from 'lodash'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { paginate } from "../utils/paginate";
+import Pagination from "./pagination";
+import api from "../api";
+import GroupList from "./groupList";
+import SearchStatus from "./searchStatus";
+import UserTable from "./usersTable";
+import _ from "lodash";
+const UsersList = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [professions, setProfession] = useState();
+    const [selectedProf, setSelectedProf] = useState();
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const pageSize = 8;
 
-const Users = () => {
-    const [currentPage, setCurrentPage] = useState(1)
-    const [professions, setProfession] = useState()
-    const [selectedProf, setSelectedProf] = useState()
-    const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
-    const [users, setUsers] = useState([])
-
-    const pageSize = 8
-
+    const [users, setUsers] = useState();
     useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data))
-    }, [])
-
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
     const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId))
-    }
-
+        setUsers(users.filter((user) => user._id !== userId));
+    };
     const handleToggleBookMark = (id) => {
-        setUsers(
-            users.map((user) => {
-                if (user._id === id) {
-                    return { ...user, bookmark: !user.bookmark }
-                }
-                return user
-            })
-        )
-    }
+        const newArray = users.map((user) => {
+            if (user._id === id) {
+                return { ...user, bookmark: !user.bookmark };
+            }
+            return user;
+        });
+        setUsers(newArray);
+    };
 
     useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfession(data))
-    }, [])
+        api.professions.fetchAll().then((data) => setProfession(data));
+    }, []);
 
     useEffect(() => {
-        setCurrentPage(1)
-    }, [selectedProf])
+        setCurrentPage(1);
+    }, [selectedProf]);
 
     const handleProfessionSelect = (item) => {
-        setSelectedProf(item)
-    }
+        setSelectedProf(item);
+    };
 
     const handlePageChange = (pageIndex) => {
-        setCurrentPage(pageIndex)
-    }
-
+        setCurrentPage(pageIndex);
+    };
     const handleSort = (item) => {
-        setSortBy(item)
-    }
+        setSortBy(item);
+    };
 
     if (users) {
-        /* eslint-disable */
         const filteredUsers = selectedProf
             ? users.filter(
                   (user) =>
                       JSON.stringify(user.profession) ===
                       JSON.stringify(selectedProf)
               )
-            : users
-        /* eslint-enable */
+            : users;
 
-        const count = filteredUsers.length
-
+        const count = filteredUsers.length;
         const sortedUsers = _.orderBy(
             filteredUsers,
             [sortBy.path],
             [sortBy.order]
-        )
-
-        const usersCrop = paginate(sortedUsers, currentPage, pageSize)
-
+        );
+        const usersCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
-            setSelectedProf()
-        }
+            setSelectedProf();
+        };
 
         return (
             <div className="d-flex">
@@ -91,18 +80,18 @@ const Users = () => {
                             onItemSelect={handleProfessionSelect}
                         />
                         <button
-                            className="btn btn-secondary m-2"
+                            className="btn btn-secondary mt-2"
                             onClick={clearFilter}
                         >
-                            Очистить
+                            {" "}
+                            Очиститть
                         </button>
                     </div>
                 )}
-
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
                     {count > 0 && (
-                        <UsersTable
+                        <UserTable
                             users={usersCrop}
                             onSort={handleSort}
                             selectedSort={sortBy}
@@ -120,13 +109,12 @@ const Users = () => {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-    return 'loading...'
-}
-
-Users.propTypes = {
+    return "loading...";
+};
+UsersList.propTypes = {
     users: PropTypes.array
-}
+};
 
-export default Users
+export default UsersList;

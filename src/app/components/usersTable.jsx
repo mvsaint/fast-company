@@ -1,10 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import BookMark from './bookmark'
-import QualitiesList from './qualitiesList'
-import Table from './table'
+import React from "react";
+import PropTypes from "prop-types";
 
-const UsersTable = ({
+import BookMark from "./bookmark";
+import QualitiesList from "./qualitiesList";
+import Table from "./table";
+import { Link } from "react-router-dom";
+
+const UserTable = ({
     users,
     onSort,
     selectedSort,
@@ -13,20 +15,26 @@ const UsersTable = ({
     ...rest
 }) => {
     const columns = {
-        name: { path: 'name', name: 'Имя' },
+        name: {
+            path: "name",
+            name: "Имя",
+            component: (user) => (
+                <Link to={`/users/${user._id}`}>{user.name}</Link>
+            )
+        },
         qualities: {
-            name: 'Качества',
+            name: "Качества",
             component: (user) => <QualitiesList qualities={user.qualities} />
         },
-        professions: { path: 'profession.name', name: 'Профессия' },
+        professions: { path: "profession.name", name: "Профессия" },
         completedMeetings: {
-            path: 'completedMeetings',
-            name: 'Встретился, раз'
+            path: "completedMeetings",
+            name: "Встретился, раз"
         },
-        rate: { path: 'rate', name: 'Оценка' },
+        rate: { path: "rate", name: "Оценка" },
         bookmark: {
-            path: 'bookmark',
-            name: 'Избранное',
+            path: "bookmark",
+            name: "Избранное",
             component: (user) => (
                 <BookMark
                     status={user.bookmark}
@@ -44,8 +52,7 @@ const UsersTable = ({
                 </button>
             )
         }
-    }
-
+    };
     return (
         <Table
             onSort={onSort}
@@ -53,15 +60,15 @@ const UsersTable = ({
             columns={columns}
             data={users}
         />
-    )
-}
+    );
+};
 
-export default UsersTable
-
-UsersTable.propTypes = {
+UserTable.propTypes = {
     users: PropTypes.array.isRequired,
     onSort: PropTypes.func.isRequired,
     selectedSort: PropTypes.object.isRequired,
     onToggleBookMark: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired
-}
+};
+
+export default UserTable;
