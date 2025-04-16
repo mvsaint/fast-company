@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 
 const GroupList = ({
     items,
-    valueProperty,
-    contentProperty,
+    valueProperty = "_id",
+    contentProperty = "name",
     onItemSelect,
     selectedItem
 }) => {
@@ -45,14 +45,11 @@ const GroupList = ({
         </ul>
     );
 };
-GroupList.defaultProps = {
-    valueProperty: "_id",
-    contentProperty: "name"
-};
+
 GroupList.propTypes = {
     items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    valueProperty: PropTypes.string.isRequired,
-    contentProperty: PropTypes.string.isRequired,
+    valueProperty: PropTypes.string,
+    contentProperty: PropTypes.string,
     onItemSelect: PropTypes.func,
     selectedItem: PropTypes.object
 };
